@@ -24,6 +24,7 @@ class DatabaseTester extends React.Component {
             fireStore.collection('todoLists').add({
                     name: todoListJson.name,
                     owner: todoListJson.owner,
+                    lastUpdated: todoListJson.lastUpdated,
                     items: todoListJson.items
                 }).then(() => {
                     console.log("DATABASE RESET");

@@ -3,11 +3,28 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { NavLink, Redirect } from 'react-router-dom';
 import { firestoreConnect } from 'react-redux-firebase';
-import TodoListLinks from './TodoListLinks'
+import TodoListLinks from './TodoListLinks';
+import {createTodoList} from '../../store/database/asynchHandler';
 
 class HomeScreen extends Component {
 
+
+    handleNewList = (e) => {
+        const {props} = this;
+        let date = new Date().getTime()*-1;
+        const todoList = {
+            items: [],
+            lastUpdated: date,
+            name: "Unknown",
+            owner: "Unknown",
+            
+        }
+        props.createNewList(todoList);
+    }
+
+
     render() {
+        const todoLists = this.props.todoLists;
         if (!this.props.auth.uid) {
             return <Redirect to="/login" />;
         }
@@ -39,13 +56,17 @@ class HomeScreen extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        todoLists: state.firestore.ordered.todoLists,
     };
 };
+const mapDispatchToProps = dispatch => ({
+    createNewList: (todoList) => dispatch(createTodoList(todoList)),
+  });
 
 export default compose(
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps),
     firestoreConnect([
-      { collection: 'todoLists' },
+      { collection: 'todoLists',orderBy:['lastUpdated']},
     ]),
 )(HomeScreen);

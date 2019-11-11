@@ -4,22 +4,33 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ItemsList from './ItemsList.js'
 import { firestoreConnect } from 'react-redux-firebase';
+import {editList} from '../../store/database/asynchHandler';
 
 class ListScreen extends Component {
     state = {
-        name: '',
-        owner: '',
+        name: this.props.todoList.name,
+        owner: this.props.todoList.owner,
     }
 
     handleChange = (e) => {
+        const { props,state } = this;
         const { target } = e;
+
+
+        let b = target.id;
+        props.todoList.name = target.value;
+
+        let date = new Date().getTime()*-1;
+        props.todoList.lastUpdated = date;
 
         this.setState(state => ({
             ...state,
             [target.id]: target.value,
         }));
+        
+        props.editList(props.todoList.id, props.todoList);
     }
-
+    
     render() {
         const auth = this.props.auth;
         const todoList = this.props.todoList;
@@ -55,9 +66,12 @@ const mapStateToProps = (state, ownProps) => {
     auth: state.firebase.auth,
   };
 };
+const mapDispatchToProps = dispatch => ({
+    editList: (todoListId,todoList) => dispatch(editList(todoListId,todoList)),
+  });
 
 export default compose(
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
     { collection: 'todoLists' },
   ]),

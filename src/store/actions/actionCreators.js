@@ -11,6 +11,10 @@ export const REGISTER_ERROR = 'REGISTER_ERROR';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export const CREATE_TODO_LIST = 'CREATE_TODO_LIST';
+export const CREATE_TODO_LIST_ERROR = 'CREATE_TODO_LIST_ERROR';
+export const EDIT_LIST = 'EDIT_LIST';
+export const EDIT_LIST_ERROR = 'EDIT_LIST_ERROR';
 
 // THESE CREATORS MAKE ACTIONS ASSOCIATED WITH USER ACCOUNTS
 
@@ -33,13 +37,28 @@ export function logoutSuccess() {
 // THESE CREATORS MAKE ACTIONS FOR ASYNCHRONOUS TODO LIST UPDATES
 export function createTodoList(todoList) {
     return {
-        type: 'CREATE_TODO_LIST',
+        type:"CREATE_TODO_LIST",
         todoList
     }
 }
 export function createTodoListError(error) {
     return {
         type: 'CREATE_TODO_LIST_ERROR',
+        error
+    }
+}
+export function editList(todoList) {
+    console.log(todoList);
+    console.log("Editing list action created");
+    return {
+        type : 'EDIT_LIST',
+        todoList
+    }
+}
+export function editListError(error) {
+    console.log("Editing list action error");
+    return {
+        type : 'EDIT_LIST_ERROR',
         error
     }
 }

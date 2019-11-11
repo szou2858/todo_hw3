@@ -6,9 +6,9 @@ export const loginHandler = ({ credentials, firebase }) => (dispatch, getState) 
       credentials.password,
     ).then(() => {
       console.log("LOGIN_SUCCESS");
-      dispatch({ type: 'LOGIN_SUCCESS' });
+      dispatch(actionCreators.loginSuccess);
     }).catch((err) => {
-      dispatch({ type: 'LOGIN_ERROR', err });
+      dispatch(actionCreators.loginError);
     });
   };
 
@@ -30,6 +30,34 @@ export const registerHandler = (newUser, firebase) => (dispatch, getState, { get
     })).then(() => {
         dispatch(actionCreators.registerSuccess);
     }).catch((err) => {
+        console.log(err);
         dispatch(actionCreators.registerError);
     });
 };
+
+export const createTodoList = todoList => (dispatch, getState, { getFirestore }) => {
+    const fireStore = getFirestore();
+    fireStore.collection('todoLists').add({
+      ...todoList,
+    }).then(() => dispatch(
+      actionCreators.createTodoList(todoList),
+    )).catch(err => dispatch(
+      actionCreators.createTodoListError,
+    ));
+  };
+
+  export const editList = (todoListId,todoList) => (dispatch, getState, { getFirestore }) => {
+    console.log("Edit list handler called");
+      const fireStore = getFirestore();
+      fireStore.collection('todoLists').doc(todoListId).update({
+        name:todoList.name,
+        owner:todoList.owner,
+        lastUpdated: todoList.lastUpdated,
+    })
+      .then(() => dispatch(
+        actionCreators.editList(todoList),
+      )).catch(err => dispatch(
+        actionCreators.editListError,
+      ));
+    };
+  

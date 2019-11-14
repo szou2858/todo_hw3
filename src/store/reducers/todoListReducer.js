@@ -10,9 +10,11 @@ const todoListReducer = (state = initState, action) => {
         /* IF YOU HAVE ANY TODO LIST EDITING REDUCERS ADD THEM HERE */ 
         case actionCreators.CREATE_TODO_LIST:
             console.log("CREATE_TODOLIST_ACTION REDUCER");
+            console.log(state);
             return {
                 ...state,
                 todoList: action.todoList,
+                newListId: action.todoList.id,
             };
         case actionCreators.EDIT_LIST:
             console.log("EDIT LIST ACTION REDUCER");

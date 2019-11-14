@@ -5,6 +5,10 @@ import { compose } from 'redux';
 import ItemsList from './ItemsList.js'
 import { firestoreConnect } from 'react-redux-firebase';
 import {editList} from '../../store/database/asynchHandler';
+import {createNewItem} from '../../store/database/asynchHandler';
+import { getFirestore } from 'redux-firestore';
+import { Link } from 'react-router-dom';
+
 
 class ListScreen extends Component {
     state = {
@@ -16,9 +20,10 @@ class ListScreen extends Component {
         const { props,state } = this;
         const { target } = e;
 
-
-        let b = target.id;
-        props.todoList.name = target.value;
+        if(target.id === "name")
+            props.todoList.name = target.value;
+        else if(target.id === "owner")
+            props.todoList.owner = target.value;
 
         let date = new Date().getTime()*-1;
         props.todoList.lastUpdated = date;
@@ -28,12 +33,32 @@ class ListScreen extends Component {
             [target.id]: target.value,
         }));
         
-        props.editList(props.todoList.id, props.todoList);
+        props.editList(props.todoList);
+    }
+
+    handleNewItem = () => {
+        const firestore = getFirestore();
+        const items = this.props.todoList.items;
+        const newItem = {
+            assigned_to: "",
+            completed: "",
+            description: "",
+            due_date: "",
+            key: this.props.todoList.items.length,
+        }
+        items.push(newItem);
+        console.log(items);
+        firestore.collection("todoLists").doc(this.props.todoList.id).update({
+            items: items,
+        });
+        //this.props.createNewItem(this.props.todoList, newItem)
+
     }
     
     render() {
         const auth = this.props.auth;
         const todoList = this.props.todoList;
+        const items = todoList.items;
         if (!auth.uid) {
             return <Redirect to="/" />;
         }
@@ -49,7 +74,15 @@ class ListScreen extends Component {
                     <label htmlFor="password">Owner</label>
                     <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} value={todoList.owner} />
                 </div>
+                
                 <ItemsList todoList={todoList} />
+                <div className="new_item_container">
+                    <Link to={'/itemScreen/' +todoList.id +'/'+items.length} key={items.length}>
+                        <button className="new_item_button" onClick={this.handleNewItem}>
+                            Add Item
+                        </button>
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -59,7 +92,8 @@ const mapStateToProps = (state, ownProps) => {
   const { id } = ownProps.match.params;
   const { todoLists } = state.firestore.data;
   const todoList = todoLists ? todoLists[id] : null;
-  todoList.id = id;
+   if(todoList)
+	todoList.id = id;
 
   return {
     todoList,
@@ -67,7 +101,8 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 const mapDispatchToProps = dispatch => ({
-    editList: (todoListId,todoList) => dispatch(editList(todoListId,todoList)),
+    editList: (todoList) => dispatch(editList(todoList)),
+    createNewItem: (todoList,newItem) => dispatch(createNewItem(todoList,newItem)),
   });
 
 export default compose(

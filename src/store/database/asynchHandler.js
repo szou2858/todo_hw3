@@ -39,6 +39,7 @@ export const createTodoList = todoList => (dispatch, getState, { getFire
     const fireStore = getFirestore();
     fireStore.collection('todoLists').add({
       ...todoList,
+  
     }).then(() => dispatch(
       actionCreators.createTodoList(todoList),
     )).catch(err => dispatch(
@@ -46,10 +47,10 @@ export const createTodoList = todoList => (dispatch, getState, { getFire
     ));
   };
 
-  export const editList = (todoListId,todoList) => (dispatch, getState, { getFirestore }) => {
+  export const editList = (todoList) => (dispatch, getState, { getFirestore }) => {
     console.log("Edit list handler called");
       const fireStore = getFirestore();
-      fireStore.collection('todoLists').doc(todoListId).update({
+      fireStore.collection('todoLists').doc(todoList.id).update({
         name:todoList.name,
         owner:todoList.owner,
         lastUpdated: todoList.lastUpdated,
@@ -59,5 +60,18 @@ export const createTodoList = todoList => (dispatch, getState, { getFire
       )).catch(err => dispatch(
         actionCreators.editListError,
       ));
+    };
+
+    export const createNewItem = (todoList,item) => (dispatch, getState, { getFirestore }) => {
+      const fireStore = getFirestore();
+      fireStore.collection('todoLists').doc(todoList.id).set(
+            { items: [{item}] },
+            { merge: true }
+        )
+          .then(() => dispatch(
+            actionCreators.editList(todoList),
+          )).catch(err => dispatch(
+            actionCreators.editListError,
+          ));
     };
   

@@ -5,12 +5,19 @@ import { NavLink, Redirect } from 'react-router-dom';
 import { firestoreConnect } from 'react-redux-firebase';
 import TodoListLinks from './TodoListLinks';
 import {createTodoList} from '../../store/database/asynchHandler';
-
+import { getFirestore } from 'redux-firestore';
+import * as actionCreators from '../../store/actions/actionCreators.js'
+ 
 class HomeScreen extends Component {
+    state = {
+        newListId:null,
+    }
 
 
     handleNewList = (e) => {
         const {props} = this;
+        const firestore = getFirestore();
+        
         let date = new Date().getTime()*-1;
         const todoList = {
             items: [],
@@ -19,7 +26,17 @@ class HomeScreen extends Component {
             owner: "Unknown",
             
         }
-        props.createNewList(todoList);
+        console.log(this.state.newListId);
+        firestore.collection("todoLists").add(todoList).then(a =>{
+            console.log(a.id);
+            todoList.id = a.id;
+            this.setState({newListId: a.id});
+            props.dispatch(actionCreators.createTodoList(todoList));
+        })
+        //firestore.collection("todoLists").orderBy("lastUpdated","asc");
+        console.log(this.state.newListId);
+        console.log(this.state.todoList)
+        //props.createNewList(todoList);
     }
 
 
@@ -27,6 +44,9 @@ class HomeScreen extends Component {
         const todoLists = this.props.todoLists;
         if (!this.props.auth.uid) {
             return <Redirect to="/login" />;
+        }
+        if(this.state.newListId){
+            return <Redirect to={'/todoList/' + this.state.newListId} />;
         }
 
         return (

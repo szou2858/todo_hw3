@@ -24,6 +24,8 @@ const todoListReducer = (state = initState, action) => {
                 name: action.todoList.name,
                 owner: action.todoList.owner,
             };
+        case "SORT_BY_TASK":
+            console.log("sort by task reducer");
         default:
             return state;
     }

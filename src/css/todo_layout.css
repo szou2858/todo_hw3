@@ -48,3 +48,17 @@ input[type=email]:not(.browser-default):focus:not([readonly]) + label,
 input[type=password]:not(.browser-default):focus:not([readonly]) + label{
   color: #ec407a !important;
 }
+
+.fixed-action-btn {
+  position: absolute;
+  right:5%;
+}
+.fab:hover + .fab-options {
+  visibility: visible;
+}
+.fab-options {
+  right: 55px !important;
+}
+.fab-options:hover {
+  visibility: visible !important;
+}

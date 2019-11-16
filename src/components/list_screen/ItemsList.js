@@ -96,23 +96,26 @@ class ItemsList extends React.Component {
         console.log("ItemsList: todoList.id " + todoList.id);
         return (
             <div className="todo-lists section">
-                <div className="list_item_header_card">
-                    <div className="list_item_task_header"
-                        onClick ={this.processSortItemsByTask}>Task</div>
-                    <div className="list_item_due_date_header"
-                        onClick ={this.processSortItemsByDueDate}>Due Date</div>
-                    <div className="list_item_status_header"
-                        onClick ={this.processSortItemsByStatus}>Status</div>
+                <div className="list_item_header_card row  grey darken-3 ">
+                    <div className="list_item_task_header col s4 pointer"
+                        onClick ={this.processSortItemsByTask}><h5>Task</h5></div>
+                    <div className="list_item_due_date_header col s4 pointer"
+                        onClick ={this.processSortItemsByDueDate}><h5>Due Date</h5></div>
+                    <div className="list_item_status_header col s4 pointer"
+                        onClick ={this.processSortItemsByStatus}><h5>Status</h5></div>
                 </div>
+                <div className = "row">
                 {items && items.map(function(item) {
                     item.id = item.key;
                     return (
                         <Link to={'/itemScreen/' +todoList.id +'/'+item.id} key={item.id}>
                             <ItemCard todoList={todoList} item={item} />
+                            <div class="divider"></div>
                         </Link>
                         
                     );})
                 }
+                </div>
             </div>
         );
     }

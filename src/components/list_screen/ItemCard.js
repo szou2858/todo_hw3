@@ -50,18 +50,17 @@ class ItemCard extends React.Component {
     render() {
         const { item } = this.props;  
         return (
-            <div className="card z-depth-0 todo-list-link pink-lighten-3">
-                <div className="card-content grey-text text-darken-3">
+            <div className="card z-depth-0 todo-list-link pink-lighten-3 row">
+                <div className="card-content black-text text-darken-3 col s4 left-align">
                     <span className="card-title">{item.description} </span>
+                    <span>Assigned To: {item.assigned_to}</span>
                 </div>
-                <div className='list_item_card_assigned_to'>
-                    Assigned To: <strong>{item.assigned_to}</strong>
-                </div>
-                <div className='list_item_card_due_date'>
+                
+                <div className='card-content list_item_card_due_date black-text col s4'>
                     {item.due_date}
                 </div>
-                <div className='list_item_card_completed'>
-                    <strong>{(item.completed) ? "Completed": "Pending"}</strong>
+                <div className='card-content list_item_card_completed black-text col s4'>
+                    <strong className={(item.completed)? "completed":"pending"}>{(item.completed) ? "Completed": "Pending"}</strong>
                 </div>
                 <div className="fixed-action-btn direction-left">
                     <div className="btn-floating btn-large blue fab">
@@ -96,6 +95,7 @@ class ItemCard extends React.Component {
                     </ul>
                 </div>
             </div>
+            
         );
     }
 }

@@ -62,3 +62,29 @@ input[type=password]:not(.browser-default):focus:not([readonly]) + label{
 .fab-options:hover {
   visibility: visible !important;
 }
+.list_item_header_card {
+  height: 50px;
+  font-family: "Verdana", Times, serif;
+  color:white;
+}
+.delete_button {
+  position: absolute;
+  right: 18%;
+  top: 4.5%;
+}
+.list_item_card_due_date, .list_item_card_completed {
+  font-size:20px;
+  top:50%
+}
+.completed {
+  color: green;
+}
+.pending {
+  color: red;
+}
+.card-content {
+  padding:15px !important;
+}
+.pointer {
+  cursor: pointer;
+}

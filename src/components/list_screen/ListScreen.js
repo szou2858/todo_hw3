@@ -15,6 +15,7 @@ class ListScreen extends Component {
     state = {
         name: this.props.todoList.name,
         owner: this.props.todoList.owner,
+        newItem: false,
     }
 
     handleChange = (e) => {
@@ -46,7 +47,11 @@ class ListScreen extends Component {
             description: "",
             due_date: "",
             key: this.props.todoList.items.length,
+            id: this.props.todoList.items.length,
         }
+        this.setState({
+            newItem: true,
+        });
         items.push(newItem);
         console.log(items);
         firestore.collection("todoLists").doc(this.props.todoList.id).update({
@@ -73,8 +78,11 @@ class ListScreen extends Component {
 
 
         return (
-            <div className="container white">
-                <h5 className="grey-text text-darken-3">Todo List</h5>
+            <div className="container white list-container">
+                <br></br>
+                <h5 className="grey-text text-darken-3 list-header">
+                    Todo List
+                </h5>
 
                 <Modal header="Delete List?" trigger={
                     <Button className = "delete_button">
@@ -93,23 +101,26 @@ class ListScreen extends Component {
                         </div>
                     </div>
                 </Modal>
-                <div className="input-field">
-                    <label className="active" htmlFor="email">Name</label>
-                    <input className="active" type="text" name="name" id="name" onChange={this.handleChange} value={todoList.name} />
-                </div>
-                <div className="input-field">
-                    <label className="active" htmlFor="password">Owner</label>
-                    <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} value={todoList.owner} />
-                </div>
+                <div className="row">
+                    <div className="input-field col s5">
+                        <label className="active" htmlFor="email">Name</label>
+                        <input className="active" type="text" name="name" id="name" onChange={this.handleChange} value={todoList.name} />
+                    </div>
+                    <div className="input-field col s5">
+                        <label className="active" htmlFor="password">Owner</label>
+                        <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} value={todoList.owner} />
+                    </div>
+                </div>    
                 
                 <ItemsList todoList={todoList} />
                 <div className="new_item_container">
-                    <Link to={'/itemScreen/' +todoList.id +'/'+items.length} key={items.length}>
-                        <button className="new_item_button" onClick={this.handleNewItem}>
-                            Add Item
-                        </button>
+                    <Link to={'/newItem/' +todoList.id +'/'+items.length} key={items.length}>
+                        <Button className="new_item_button" onClick = {this.handleNewItem}>
+                            <i className="material-icons">add</i>
+                        </Button>
                     </Link>
                 </div>
+                <br></br>
             </div>
         );
     }

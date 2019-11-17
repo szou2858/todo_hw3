@@ -7,6 +7,7 @@ import TodoListLinks from './TodoListLinks';
 import {createTodoList} from '../../store/database/asynchHandler';
 import { getFirestore } from 'redux-firestore';
 import * as actionCreators from '../../store/actions/actionCreators.js'
+import { Button } from 'react-materialize';
  
 class HomeScreen extends Component {
     state = {
@@ -63,9 +64,9 @@ class HomeScreen extends Component {
                         </div>
                         
                         <div className="home_new_list_container">
-                                <button className="home_new_list_button" onClick={this.handleNewList}>
+                                <Button className="home_new_list_button" onClick={this.handleNewList}>
                                     Create a New To Do List
-                                </button>
+                                </Button>
                         </div>
                     </div>
                 </div>

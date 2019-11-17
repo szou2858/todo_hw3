@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { getFirestore } from 'redux-firestore';
 import { Link } from 'react-router-dom';
 
-class ItemScreen extends Component {
+class NewItemScreen extends Component {
     state = {
         description: this.props.currentItem.description,
         assigned_to: this.props.currentItem.assigned_to,
@@ -27,15 +27,7 @@ class ItemScreen extends Component {
     }
 
     handleCompletedChange = (event) => {
-        if(this.state.completed===true)
-            this.setState({
-                completed:false,
-            });
-        else{
-            this.setState({
-                completed:true,
-            });
-        }
+        this.setState({completed: event.target.value});
     }
 
     handleSubmit = () => {
@@ -43,7 +35,7 @@ class ItemScreen extends Component {
         console.log(this.props.todoList);
         console.log(this.props.currentItem);
         
-        let currentItemId = this.props.todoList.items.indexOf(this.props.currentItem);
+        let currentItemId = this.props.currentItem.id;
         const newItem = {
             key: this.props.currentItem.key,
             description: this.state.description,
@@ -58,6 +50,14 @@ class ItemScreen extends Component {
             items: newItems,
         });
     }
+    handleCancel = () =>{
+        const firestore = getFirestore();
+        const items = this.props.todoList.items;
+        items.splice(items.length-1,1)
+        firestore.collection("todoLists").doc(this.props.todoList.id).update({
+            items:items,
+        });
+    }
 
     render() {
         //const currentItem = this.props.currentItem;
@@ -66,20 +66,20 @@ class ItemScreen extends Component {
                 <div id="item_form_container">
                     
                     <h3 className="teal lighten-4 grey-text text-darken-3 item-screen-header">Item</h3>
-
+                    
                     <div className="container white item-screen-container">
                         <p>
                             <span id="item_description_prompt">Description: </span>
-                            <input type="text" className="item_description_textfield" onChange={this.handleDescriptionChange} defaultValue={(this.props.currentItem) ? this.props.currentItem.description: null}/>
+                            <input type="text" id="item_description_textfield" onChange={this.handleDescriptionChange} defaultValue={(this.props.currentItem) ? this.props.currentItem.description: null}/>
                         </p>
 
                         <p>
                             <span id="item_assigned_to_prompt" >Assigned to: </span>
-                            <input type="text" className="item_assigned_to_textfield" onChange={this.handleAssignedToChange} defaultValue={(this.props.currentItem) ? this.props.currentItem.assigned_to: null}/>
+                            <input type="text" id="item_assigned_to_textfield" onChange={this.handleAssignedToChange} defaultValue={(this.props.currentItem) ? this.props.currentItem.assigned_to: null}/>
                         </p>
                         <p>
                             <span id="item_due_date_prompt">Due Date: </span>
-                            <input type="date" className="item_due_date_picker" onChange={this.handleDueDateChange} defaultValue={(this.props.currentItem) ? this.props.currentItem.due_date: null}/>
+                            <input type="date" id="item_due_date_picker" onChange={this.handleDueDateChange} defaultValue={(this.props.currentItem) ? this.props.currentItem.due_date: null}/>
                         </p>
                         <p>
                             <span id="item_completed_prompt" >Completed: </span>
@@ -94,7 +94,8 @@ class ItemScreen extends Component {
                             <Link to={'/todoList/' + this.props.todoList.id} key={this.props.todoList.id}>
                                 <button id="item_form_submit_button"
                                     onClick={this.handleSubmit}>Submit</button>
-                                <button id="item_form_cancel_button">Cancel</button>
+                                <button id="item_form_cancel_button"
+                                    onClick={this.handleCancel}>Cancel</button>
                             </Link>
                         </p>
                     </div>
@@ -110,25 +111,22 @@ const mapStateToProps = (state, ownProps) => {
     console.log(id);
     const { todoLists } = state.firestore.data;
     const todoList = todoLists ? todoLists[listId] : null;
-    const key = id;
     if(todoList)
       todoList.id = listId;
-    console.log(todoList);
     let currentItem = null;
     for(var i = 0 ; i<todoList.items.length;i++){
+        console.log(todoList.items[i].key );
         if(todoList.items[i].key ==id){
             currentItem = todoList.items[i];
         }
     }
     if(currentItem)
       currentItem.id = id;
-    console.log("current Item:")
     console.log(currentItem);
   
     return {
       todoList,
       currentItem,
-      id,
       auth: state.firebase.auth,
     };
   };
@@ -140,4 +138,4 @@ export default compose(
     firestoreConnect([
       { collection: 'todoLists' },
     ]),
-  )(ItemScreen);
+  )(NewItemScreen);

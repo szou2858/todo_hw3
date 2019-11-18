@@ -119,6 +119,9 @@ input[type=password]:not(.browser-default):focus:not([readonly]) + label{
 }
 .item-screen-header{
   text-align: center;
+  width:90%;
+  margin: 0 auto;
+  margin-top:1%;
 }
 .item-screen-container {
   width:90%;

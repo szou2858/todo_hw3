@@ -34,6 +34,7 @@ class ListScreen extends Component {
             ...state,
             [target.id]: target.value,
         }));
+
         
         props.editList(props.todoList);
     }
@@ -64,6 +65,15 @@ class ListScreen extends Component {
         const firestore = getFirestore();
         firestore.collection("todoLists").doc(this.props.todoList.id).delete();
     }
+    updateTime = () =>{
+        const firestore = getFirestore();
+        let date = new Date().getTime()*-1;
+        this.props.todoList.lastUpdated = date;
+        firestore.collection("todoLists").doc(this.props.todoList.id).update({
+            lastUpdated:this.props.todoList.lastUpdated,
+        });
+
+    }
 
     render() {
         const auth = this.props.auth;
@@ -75,6 +85,7 @@ class ListScreen extends Component {
         if(!todoList){
             return <React.Fragment/>
         }
+        this.updateTime();
 
 
         return (
